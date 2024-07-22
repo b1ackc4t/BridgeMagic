@@ -40,6 +40,14 @@ public class WebLogIntercept implements HandlerInterceptor {
         if (host.equals(DnslogConfig.managerDomain)) {
             return true;
         } else {
+
+            if (!host.endsWith(DnslogConfig.dnslogDomain)) {
+//                map.put("status", "error");
+//                map.put("message", "request host no logid found");
+//                writer.write(mapper.writeValueAsString(map));
+                return true;
+            }
+
             ObjectMapper mapper = new ObjectMapper();
             PrintWriter writer = response.getWriter();
             response.setCharacterEncoding("utf-8");
@@ -54,12 +62,7 @@ public class WebLogIntercept implements HandlerInterceptor {
                 writer.write(mapper.writeValueAsString(map));
                 return false;
             }
-            if (!host.endsWith(DnslogConfig.dnslogDomain)) {
-                map.put("status", "error");
-                map.put("message", "request host no logid found");
-                writer.write(mapper.writeValueAsString(map));
-                return false;
-            }
+
             webLog.setLogid(logID);
             webLog.setHost(host);
             webLog.setTime(new Timestamp(System.currentTimeMillis()));
